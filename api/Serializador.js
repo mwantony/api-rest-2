@@ -75,7 +75,7 @@ class SerializadorFornecedor extends Serializador {
 }
 
 class SerializadorProduto extends Serializador {
-    constructor(contentType, camposExtras) {
+    constructor (contentType, camposExtras) {
         super()
         this.contentType = contentType
         this.camposPublicos = [
