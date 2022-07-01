@@ -5,6 +5,7 @@ const SerializadorFornecedor = require('../../Serializador').SerializadorFornece
 
 roteador.get('/', async (requisicao, resposta) => {
     const resultados = await TabelaFornecedor.listar()
+    resposta.set('X-Powered-By', 'Gatito')
     resposta.status(200)
     const serializador = new SerializadorFornecedor(
         resposta.getHeader('Content-Type')
@@ -19,6 +20,7 @@ roteador.post('/', async (requisicao, resposta, proximo) => {
         const dadosRecebidos = requisicao.body
         const fornecedor = new Fornecedor(dadosRecebidos)
         await fornecedor.criar()
+        resposta.set('X-Powered-By', 'Gatito')
         resposta.status(201)
         const serializador = new SerializadorFornecedor(
             resposta.getHeader('Content-Type')
@@ -36,6 +38,7 @@ roteador.get('/:idFornecedor', async (requisicao, resposta, proximo) => {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
         await fornecedor.carregar()
+        resposta.set('X-Powered-By', 'Gatito')
         resposta.status(200)
         const serializador = new SerializadorFornecedor(
             resposta.getHeader('Content-Type'),
@@ -57,6 +60,7 @@ roteador.put('/:idFornecedor', async (requisicao, resposta, proximo) => {
         const fornecedor = new Fornecedor(dados)
         await fornecedor.atualizar()
         resposta.status(204)
+        resposta.set('X-Powered-By', 'Gatito')
         resposta.end()
     } catch (erro) {
         proximo(erro)
@@ -69,6 +73,7 @@ roteador.delete('/:idFornecedor', async (requisicao, resposta, proximo) => {
         const fornecedor = new Fornecedor({ id: id })
         await fornecedor.carregar()
         await fornecedor.remover()
+        resposta.set('X-Powered-By', 'Gatito')
         resposta.status(204)
         resposta.end()
     } catch (erro) {

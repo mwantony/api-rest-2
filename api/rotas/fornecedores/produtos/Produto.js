@@ -5,6 +5,7 @@ class Produto {
     this.id = id
     this.titulo = titulo,
     this.estoque = estoque
+    this.preco = preco
     this.fornecedor = fornecedor
     this.dataCriacao = dataCriacao
     this.dataAtualizacao = dataAtualizacao

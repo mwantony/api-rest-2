@@ -7,6 +7,7 @@ roteador.get('/', async (requisicao, resposta) => {
   const serializador = new Serializador(
     resposta.getHeader('Content-Type')
   )
+  resposta.set('X-Powered-By', 'Gatito')
   resposta.send(
     serializador.serializar(produtos)
   )
@@ -22,7 +23,12 @@ roteador.post('/', async (requisicao, resposta, proximo) => {
     const serializador = new Serializador(
       resposta.getHeader('Content-Type')
     )
+    resposta.set('ETag', produto.versao)
+    const timestamps = (new Date(produto.dataAtualizacao)).getTime()
+    resposta.set('Last-Modified', timestamps)
+    resposta.set('Location', `/api/fornecedores/${produto.fornecedor}/produtos/${produto.id}`)
     resposta.status(201)
+    resposta.set('X-Powered-By', 'Gatito')
     resposta.send(
       serializador.serializar(produto)
     )
@@ -40,6 +46,7 @@ roteador.delete('/:id', async (requisicao, resposta) => {
   const produto = new Produto(dados)
   await produto.apagar()
   resposta.status(204)
+  resposta.set('X-Powered-By', 'Gatito')
   resposta.end()
 })
 
@@ -55,6 +62,10 @@ roteador.get('/:id', async (requisicao, resposta, proximo) => {
       resposta.getHeader('Content-Type'),
       ['preco', 'estoque', 'fornecedor', 'dataCriacao', 'dataAtualizacao', 'versao']
     )
+    resposta.set('X-Powered-By', 'Gatito')
+    resposta.set('ETag', produto.versao)
+    const timestamps = (new Date(produto.dataAtualizacao)).getTime()
+    resposta.set('Last-Modified', timestamps)
     resposta.send(
       serializador.serializar(produto)
     )
@@ -75,6 +86,11 @@ roteador.put('/:id', async (requisicao, resposta, proximo) => {
     )
     const produto = new Produto(dados)
     await produto.atualizar()
+    await produto.carregar()
+    resposta.set('X-Powered-By', 'Gatito')
+    resposta.set('ETag', produto.versao)
+    const timestamps = (new Date(produto.dataAtualizacao)).getTime()
+    resposta.set('Last-Modified', timestamps)
     resposta.status(204)
     resposta.end()
   } catch(erro) {
@@ -92,6 +108,11 @@ roteador.post('/:id/diminuir-estoque', async(requisicao, resposta, proximo) => {
     await produto.carregar()
     produto.estoque = produto.estoque - requisicao.body.quantidade
     await produto.diminuirEstoque()
+    await produto.carregar()
+    resposta.set('ETag', produto.versao)
+    resposta.set('X-Powered-By', 'Gatito')
+    const timestamps = (new Date(produto.dataAtualizacao)).getTime()
+    resposta.set('Last-Modified', timestamps)
     resposta.status(204)
     resposta.end()
   } catch(erro) {
