@@ -31,6 +31,10 @@ app.use((requisicao, resposta, proximo) => {
 const roteador = require('./rotas/fornecedores')
 app.use('/api/fornecedores', roteador)
 
+app.use((requisicao, resposta, proximo) => {
+    resposta.set('X-Powered-By', 'Gatito')
+})
+
 app.use((erro, requisicao, resposta, proximo) => {
     let status = 500
 
